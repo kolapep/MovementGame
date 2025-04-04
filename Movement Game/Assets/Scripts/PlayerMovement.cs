@@ -53,8 +53,8 @@ public class PlayerMovement : MonoBehaviour
 
     public enum MovementStyle
     {
-        Basic,
-        noRotation
+        BasicMove,
+        ForwardMove
     }
 
     private void Start()
@@ -123,11 +123,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-        if (currentStyle == MovementStyle.Basic){
+        if (currentStyle == MovementStyle.BasicMove)
+        {
             //Move 
             moveDirection = orientation.forward * verticalInput + orientation.right * horizonalInput;
         }
-        else if (currentStyle == MovementStyle.noRotation){
+        else if (currentStyle == MovementStyle.ForwardMove)
+        {
             //Calculate and Move in the direction the player is looking
             moveDirection = orientation.forward * verticalInput;
         }

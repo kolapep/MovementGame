@@ -24,26 +24,31 @@ public class SwitchingManager : MonoBehaviour
         SwitchRotationLock();
         GameSettingsLock();
 
+        if (Input.GetKeyDown(KeyCode.Alpha1)) moveType = 1;
+        if (Input.GetKeyDown(KeyCode.Alpha2)) moveType = 2;
+        if (Input.GetKeyDown(KeyCode.Alpha3)) moveType = 3;
+        if (Input.GetKeyDown(KeyCode.Alpha4)) moveType = 4;
+
     }
 
-    //private void FixedUpdate()
-    //{
-    //    switch (moveType)
-    //    {
-    //        case 1:
-    //            MoveWithBySettingPosition();
-    //            break;
-    //        case 2:
-    //            MoveWithMovePosition();
-    //            break;
-    //        case 3:
-    //            MoveWithAddForce();
-    //            break;
-    //        case 4:
-    //            MoveWithAddTorque();
-    //            break;
-    //    }
-    //}
+    private void FixedUpdate()
+    {
+        switch (moveType)
+        {
+            case 1:
+                MoveWithBySettingPosition();
+                break;
+            case 2:
+                MoveWithMovePosition();
+                break;
+            case 3:
+                MoveWithAddForce();
+                break;
+            case 4:
+                MoveWithAddTorque();
+                break;
+        }
+    }
 
     private void GameSettingsLock()
     {
@@ -53,20 +58,19 @@ public class SwitchingManager : MonoBehaviour
 
     private void SwitchCameraLock()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) RotationScript.SwitchCameraStyle(CameraStyle.Basic);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) RotationScript.SwitchCameraStyle(CameraStyle.Manual);
-
+        RotationScript.SwitchCameraStyle(CameraStyle.LockedCam);
+        RotationScript.SwitchCameraStyle(CameraStyle.BasicCam);
     }
 
     private void SwitchMovementLock()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha3)) playerMovementScript.SwitchMovementStyle(MovementStyle.Basic);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) playerMovementScript.SwitchMovementStyle(MovementStyle.noRotation);
+        playerMovementScript.SwitchMovementStyle(MovementStyle.BasicMove);
+        playerMovementScript.SwitchMovementStyle(MovementStyle.ForwardMove);
     }
 
     private void SwitchRotationLock()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha5)) RotationScript.Hops = RotationScript.Hops ? false : true;
+        RotationScript.Hops = RotationScript.Hops ? false : true;
 
     }
 

@@ -38,8 +38,8 @@ public class ThirdPersonCam : MonoBehaviour
 
     public enum CameraStyle
     {
-        Basic,
-        Manual,
+        LockedCam,
+        BasicCam,
     }
 
     private void Start()
@@ -111,14 +111,14 @@ public class ThirdPersonCam : MonoBehaviour
     private void CamRotation()
     {
         //Links orientation front to cam direction
-        if (currentStyle == CameraStyle.Basic)
+        if (currentStyle == CameraStyle.LockedCam)
         {
             Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z); //calculates where cam direction is based on the camera's x/z axis to the player object's
             orientation.forward = viewDir.normalized;
         }
 
         //Unlinks orientation front to cam direction
-        else if (currentStyle == CameraStyle.Manual)
+        else if (currentStyle == CameraStyle.BasicCam)
         {
             orientation.forward = playerObj.forward;
         }
