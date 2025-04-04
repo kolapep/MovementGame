@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static PlayerMovement;
@@ -5,74 +6,118 @@ using static ThirdPersonCam;
 
 public class SwitchingManager : MonoBehaviour
 {
+    // SCRIPT: SWITCHES PLAYER MECHANICS AND UI
+
+    [Header("Scripts")]
     public ThirdPersonCam RotationScript;
     public PlayerMovement playerMovementScript;
 
-    public GameObject gameMenu;
+    private int playerMovementMechStage = 1;
 
+    [Header("UI Objects")]
+    public GameObject gameMenu;
+    public TextMeshProUGUI MovementStatusText;
+    public TextMeshProUGUI HopsText;
+    public TextMeshProUGUI CamStatusText;
 
     void Start()
     {
-        
+        //Text UI
+        MovementStatusText.text = "Press [1.2.3.4]";
+        CamStatusText.text = "...";
+        HopsText.text = "...";
     }
 
     // Update is called once per frame
     void Update()
     {
-        SwitchCameraLock();
-        SwitchMovementLock();
-        SwitchRotationLock();
-        GameSettingsLock();
+        GameUIInputs();
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) moveType = 1;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) moveType = 2;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) moveType = 3;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) moveType = 4;
+        if (Input.GetKeyDown(KeyCode.Alpha1)) playerMovementMechStage = 1;
+        if (Input.GetKeyDown(KeyCode.Alpha2)) playerMovementMechStage = 2;
+        if (Input.GetKeyDown(KeyCode.Alpha3)) playerMovementMechStage = 3;
+        if (Input.GetKeyDown(KeyCode.Alpha4)) playerMovementMechStage = 4;
 
     }
 
     private void FixedUpdate()
     {
-        switch (moveType)
+        switch (playerMovementMechStage)
         {
             case 1:
-                MoveWithBySettingPosition();
+                MouseControlDrive();
                 break;
             case 2:
-                MoveWithMovePosition();
+                MouseControlFree();
                 break;
             case 3:
-                MoveWithAddForce();
+                ManualRotation();
                 break;
             case 4:
-                MoveWithAddTorque();
+                JumpToRotate();
                 break;
         }
     }
 
-    private void GameSettingsLock()
+    private void GameUIInputs()
     {
         if (Input.GetKeyDown(KeyCode.Tab)) gameMenu.SetActive(!gameMenu.activeInHierarchy);
         if (Input.GetKeyDown(KeyCode.Q)) SceneManager.LoadScene(0);
+     
     }
 
-    private void SwitchCameraLock()
+    private void MouseControlDrive()
     {
         RotationScript.SwitchCameraStyle(CameraStyle.LockedCam);
-        RotationScript.SwitchCameraStyle(CameraStyle.BasicCam);
-    }
+        CamStatusText.text = "Player Direction: Camera";
 
-    private void SwitchMovementLock()
-    {
-        playerMovementScript.SwitchMovementStyle(MovementStyle.BasicMove);
         playerMovementScript.SwitchMovementStyle(MovementStyle.ForwardMove);
+        MovementStatusText.text = "Move Forward: W";
+
+        RotationScript.Hops = false;
+        HopsText.text = "Hops: False";
+
     }
 
-    private void SwitchRotationLock()
+    private void MouseControlFree()
     {
-        RotationScript.Hops = RotationScript.Hops ? false : true;
+        RotationScript.SwitchCameraStyle(CameraStyle.LockedCam);
+        CamStatusText.text = "Player Direction: Camera";
+
+        playerMovementScript.SwitchMovementStyle(MovementStyle.BasicMove);
+        MovementStatusText.text = "Move Forward: W A D";
+
+        RotationScript.Hops = false;
+        HopsText.text = "Hops: False";
 
     }
+
+    private void ManualRotation()
+    {
+        RotationScript.SwitchCameraStyle(CameraStyle.BasicCam);
+        CamStatusText.text = "Player Direction: Manual";
+
+        playerMovementScript.SwitchMovementStyle(MovementStyle.ForwardMove);
+        MovementStatusText.text = "Move Forward: W";
+
+        RotationScript.Hops = false;
+        HopsText.text = "Hops: False";
+
+    }
+
+    private void JumpToRotate()
+    {
+        RotationScript.SwitchCameraStyle(CameraStyle.BasicCam);
+        CamStatusText.text = "Player Direction: Manual";
+
+        playerMovementScript.SwitchMovementStyle(MovementStyle.ForwardMove);
+        MovementStatusText.text = "Move Forward: W";
+
+        RotationScript.Hops = true;
+        HopsText.text = "Hops: True";
+
+    }
+
 
 
 

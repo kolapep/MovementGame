@@ -6,14 +6,14 @@ using static SwitchingManager;
 
 public class ThirdPersonCam : MonoBehaviour
 {
+    // SCRIPT: ROTATES CAMERA AND PLAYER
     //Script bases from Dave / GameDevelopment. Controls the third person camera movement in relationship to the player object and inputs.
 
+    [Header("Scripts")]
     public PlayerMovement playerMovementScript;
     public SwitchingManager switchingManagerScript;
 
-
     [Header("Player Refrences")]
-
     //Player Information
     public Transform orientation;
     public Transform player;
@@ -26,20 +26,15 @@ public class ThirdPersonCam : MonoBehaviour
     private Vector2 moveInput;
 
     [Header("Camera Refrences")]
-
     public GameObject BasicCam;
-    public TextMeshProUGUI CamStatusText;
     public CameraStyle currentStyle;
-
-
-    //Rotation Depending on Grounding
     public bool Hops;
-    public TextMeshProUGUI HopsText;
 
     public enum CameraStyle
     {
         LockedCam,
         BasicCam,
+      
     }
 
     private void Start()
@@ -50,46 +45,14 @@ public class ThirdPersonCam : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        //Text UI
-        CamStatusText.text = "Player Direction: Follows Camera";
-        HopsText.text = "Hops: False";
         Hops = false;
 
     }
 
     public void Update()
     {
-        TextUI();
         PlayerRotation();
 
-    }
-    private void TextUI()
-    {
-        if (Hops == true){
-            HopsText.text = "Hops: True";
-        }
-        else{
-            HopsText.text = "Hops: False";
-        }
-
-        if (currentStyle == CameraStyle.Basic)
-        {
-            if (Hops == true){
-                CamStatusText.text = "Player Direction: Manual Only";
-            }
-            else{
-                CamStatusText.text = "Player Direction: Follows Camera";
-            }
-        }
-        else if (currentStyle == CameraStyle.Manual)
-        {
-            if (Hops == true){
-                CamStatusText.text = "Player Direction: Manual Only";
-            }
-            else{
-                CamStatusText.text = "Player Direction: Manual Rotation";
-            }
-        }
     }
     private void PlayerRotation()
     {

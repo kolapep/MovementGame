@@ -7,11 +7,11 @@ using static ThirdPersonCam;
 
 public class PlayerMovement : MonoBehaviour
 {
-    //Player Controller
+    // SCRIPT: MOVES PLAYER
 
+    [Header("Scripts")]
     public ThirdPersonCam RotationScript;
     public SwitchingManager switchingManagerScript;
-
 
     [Header("Player Refrences")]
     //Player Information
@@ -44,8 +44,7 @@ public class PlayerMovement : MonoBehaviour
     public float GroundDrag; //DRAG OR PLAYER SLIP
     public bool isGrounded;
 
-    [Header("UI and Objects")]
-    public TextMeshProUGUI MovementStatusText;
+    [Header("Character Animations")]
 
     public GameObject splashAudioClip;
     public ParticleSystem icePartic;
@@ -54,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
     public enum MovementStyle
     {
         BasicMove,
-        ForwardMove
+        ForwardMove,
     }
 
     private void Start()
@@ -67,9 +66,6 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         readyToJump = true;
-
-        //Text UI
-        MovementStatusText.text = "Move Forward: W A D";
 
         //Audio And Particles
         icePartic.Play();
@@ -199,12 +195,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void SwitchMovementStyle(MovementStyle newStyle)
     {
-
-        if (newStyle == MovementStyle.Basic) MovementStatusText.text = "Move Forward: W A D";
-        if (newStyle == MovementStyle.noRotation) MovementStatusText.text = "Move Forward: W";
-
         currentStyle = newStyle;
-
     }
 
 }
