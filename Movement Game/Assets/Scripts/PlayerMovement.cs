@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
     //Player Controller
 
     public ThirdPersonCam RotationScript;
+    public SwitchingManager switchingManagerScript;
+
 
     [Header("Player Refrences")]
     //Player Information
@@ -43,8 +45,6 @@ public class PlayerMovement : MonoBehaviour
     public bool isGrounded;
 
     [Header("UI and Objects")]
-    public GameObject gameMenu;
-    public TextMeshProUGUI slipText;
     public TextMeshProUGUI MovementStatusText;
 
     public GameObject splashAudioClip;
@@ -96,41 +96,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-        //Input
-        if (Input.GetKeyDown(KeyCode.Tab)) gameMenu.SetActive(!gameMenu.activeInHierarchy);
-        if (Input.GetKeyDown(KeyCode.Q)) SceneManager.LoadScene(0);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchMovementStyle(MovementStyle.Basic);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) SwitchMovementStyle(MovementStyle.noRotation);
 
-        if (Input.GetKeyDown(KeyCode.Alpha0)){
-            GroundDrag -= 1;
-        }
-        if (GroundDrag == -7){
-            GroundDrag = 0;
-        }
-
-        //Text UI
-        slipText.text = "Slip" + GroundDrag;
-
-        //Move
+        //Move Player
         moveInput = moveAction.ReadValue<Vector2>(); //Grabs the move acion value
         horizonalInput = moveInput.x;
         verticalInput = moveInput.y;
 
-        //Jump
-        //if (readyToJump && isGrounded && jumpAction.IsPressed())
-        //{
-        //    Debug.Log("Jump!");
-        //    //readyToJump = false;
-        //    Jump();
-        //    //Invoke(nameof(ResetJump), jumpCoolDown);
-        //    // Allows player to continuously jump by holding space
-
-        //}
-
+        //Jump Player
         if (readyToJump && isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Jump!");
             readyToJump = false;
             Jump();
             ResetJump();
@@ -220,7 +194,8 @@ public class PlayerMovement : MonoBehaviour
     {
         readyToJump = true;
     }
-    private void SwitchMovementStyle(MovementStyle newStyle)
+
+    public void SwitchMovementStyle(MovementStyle newStyle)
     {
 
         if (newStyle == MovementStyle.Basic) MovementStatusText.text = "Move Forward: W A D";
@@ -229,4 +204,5 @@ public class PlayerMovement : MonoBehaviour
         currentStyle = newStyle;
 
     }
+
 }

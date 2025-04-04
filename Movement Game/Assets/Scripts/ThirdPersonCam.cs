@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using static SwitchingManager;
 
 
 public class ThirdPersonCam : MonoBehaviour
@@ -8,6 +9,8 @@ public class ThirdPersonCam : MonoBehaviour
     //Script bases from Dave / GameDevelopment. Controls the third person camera movement in relationship to the player object and inputs.
 
     public PlayerMovement playerMovementScript;
+    public SwitchingManager switchingManagerScript;
+
 
     [Header("Player Refrences")]
 
@@ -24,20 +27,19 @@ public class ThirdPersonCam : MonoBehaviour
 
     [Header("Camera Refrences")]
 
-    public CameraStyle currentStyle;
     public GameObject BasicCam;
     public TextMeshProUGUI CamStatusText;
+    public CameraStyle currentStyle;
+
 
     //Rotation Depending on Grounding
     public bool Hops;
     public TextMeshProUGUI HopsText;
 
-
     public enum CameraStyle
     {
         Basic,
         Manual,
-        noRotation
     }
 
     private void Start()
@@ -50,87 +52,78 @@ public class ThirdPersonCam : MonoBehaviour
 
         //Text UI
         CamStatusText.text = "Player Direction: Follows Camera";
-        Hops = false;
         HopsText.text = "Hops: False";
+        Hops = false;
 
     }
 
     public void Update()
     {
-        SwitchCameraVeiw();
         TextUI();
         PlayerRotation();
 
     }
-
-    private void SwitchCameraVeiw()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCameraStyle(CameraStyle.Basic);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchCameraStyle(CameraStyle.Manual);
-        if (Input.GetKeyDown(KeyCode.Alpha5)) Hops = Hops ? false : true;
-    }
     private void TextUI()
     {
-        if (Hops == true)
-        {
+        if (Hops == true){
             HopsText.text = "Hops: True";
         }
-        else
-        {
+        else{
             HopsText.text = "Hops: False";
         }
 
         if (currentStyle == CameraStyle.Basic)
         {
-            if (Hops == true)
-            {
+            if (Hops == true){
                 CamStatusText.text = "Player Direction: Manual Only";
             }
-            else
-            {
+            else{
                 CamStatusText.text = "Player Direction: Follows Camera";
             }
         }
         else if (currentStyle == CameraStyle.Manual)
         {
-            if (Hops == true)
-            {
+            if (Hops == true){
                 CamStatusText.text = "Player Direction: Manual Only";
             }
-            else
-            {
+            else{
                 CamStatusText.text = "Player Direction: Manual Rotation";
             }
         }
     }
     private void PlayerRotation()
     {
+        // If Player is Grounded or If Locked Hop Rotation is False, Rotate the Player / Cam
         if (!Hops || playerMovementScript.isGrounded == false)
         {
-
-            //Smooth Rotation of player object
-            moveInput = moveAction.ReadValue<Vector2>(); //Grabs the input values
-            float horizontalInput = moveInput.x; ;
-            float verticleInput = moveInput.y;
+            //Smooth Rotation of player object (Visual Rotation)
+            moveInput = moveAction.ReadValue<Vector2>(); 
+            float horizontalInput = moveInput.x; 
+            float verticleInput = moveInput.y; //Grabs the input values 
             Vector3 inputDir = orientation.forward * verticleInput + orientation.right * horizontalInput; //Sets the input direction to the origional orientation plus the player input
-
-            if (inputDir != Vector3.zero) //If there is player input, change forward direction of player object to the input direction
+            if (inputDir != Vector3.zero) //If there is player input, change forward direction of player object to the input direction 
                 playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
 
-            if (currentStyle == CameraStyle.Basic)
-            {
-                //Sets the rotation orientation
-                Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z); //calculates where cam direction is based on the camera's x/z axis to the player object's
-                orientation.forward = viewDir.normalized; //Sets orientation front to cam direction
+            CamRotation();
 
-            }
-            else if (currentStyle == CameraStyle.Manual)
-            {
-                orientation.forward = playerObj.forward;
-            }
         }
     }
-    private void SwitchCameraStyle(CameraStyle newStyle)
+    private void CamRotation()
+    {
+        //Links orientation front to cam direction
+        if (currentStyle == CameraStyle.Basic)
+        {
+            Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z); //calculates where cam direction is based on the camera's x/z axis to the player object's
+            orientation.forward = viewDir.normalized;
+        }
+
+        //Unlinks orientation front to cam direction
+        else if (currentStyle == CameraStyle.Manual)
+        {
+            orientation.forward = playerObj.forward;
+        }
+    }
+    public void SwitchCameraStyle(CameraStyle newStyle)
     {
         currentStyle = newStyle;
     }
