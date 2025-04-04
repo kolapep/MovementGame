@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 public class physicsmover : MonoBehaviour
@@ -9,9 +8,6 @@ public class physicsmover : MonoBehaviour
     private Rigidbody _rb;
 
     private int moveType = 1;
-
-    public TextMeshProUGUI MovementStatusText;
-
 
     private void Start()
     {

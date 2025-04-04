@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c8f8de160dd53994db0190af72fe154c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 281238
+  packageName: Cartoon Jelly Slime
+  packageVersion: 1.1
+  assetPath: Assets/Symphonie/Models/Slime/FBX/Materials/M_Slime_Core.mat
+  uploadId: 669086

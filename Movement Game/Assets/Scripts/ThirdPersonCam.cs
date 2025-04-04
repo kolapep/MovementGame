@@ -63,6 +63,7 @@ public class ThirdPersonCam : MonoBehaviour
             moveInput = moveAction.ReadValue<Vector2>(); 
             float horizontalInput = moveInput.x; 
             float verticleInput = moveInput.y; //Grabs the input values 
+
             Vector3 inputDir = orientation.forward * verticleInput + orientation.right * horizontalInput; //Sets the input direction to the origional orientation plus the player input
             if (inputDir != Vector3.zero) //If there is player input, change forward direction of player object to the input direction 
                 playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);

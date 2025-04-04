@@ -22,10 +22,7 @@ public class SwitchingManager : MonoBehaviour
 
     void Start()
     {
-        //Text UI
-        MovementStatusText.text = "Press [1.2.3.4]";
-        CamStatusText.text = "...";
-        HopsText.text = "...";
+        gameMenu.SetActive(false);
     }
 
     // Update is called once per frame
