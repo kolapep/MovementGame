@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 using static ThirdPersonCam;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -38,17 +39,24 @@ public class PlayerMovement : MonoBehaviour
     public float airMultiplier; //AIR MOVE SPEED MULTIPLIER
     public bool readyToJump;
 
-    [Header("Ground Check")]
+    [Header("Ground")]
     public LayerMask IsGround;
     public float playerHeight;
     public float GroundDrag; //DRAG OR PLAYER SLIP
     public bool isGrounded;
 
+    [Header("Fall Damage")]
+    private float fallTimer = 0;
+    public int fallDamageLength; //FALL DAMAGE ADJUSTER
+    public float deathScreenDelay;
+    public GameObject deathScreen;
+
     [Header("Character Animations")]
 
+    public GameObject introText;
     public GameObject splashAudioClip;
     public ParticleSystem icePartic;
-
+    public AudioSource backgroundMusic;
 
     public enum MovementStyle
     {
@@ -58,6 +66,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        deathScreen.SetActive(false);
+        introText.SetActive(false);
+
         //Locate and Set Action Refrences
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
@@ -73,6 +84,19 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    IEnumerator DeathScene()
+    {
+        backgroundMusic.mute = true;
+        deathScreen.SetActive(true);
+        introText.SetActive(true);
+
+        yield return new WaitForSeconds(deathScreenDelay);
+
+        backgroundMusic.mute = false;
+        SceneManager.LoadScene(1);
+
+    }
+
     void Update()
     {
         MyInput();
@@ -83,6 +107,8 @@ public class PlayerMovement : MonoBehaviour
 
         Partical();
 
+        FallDamage();
+       
     }
 
     private void FixedUpdate()
@@ -92,20 +118,23 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-
-        //Move Player
-        moveInput = moveAction.ReadValue<Vector2>(); //Grabs the move acion value
-        horizonalInput = moveInput.x;
-        verticalInput = moveInput.y;
-
-        //Jump Player
-        if (readyToJump && isGrounded && Input.GetKeyDown(KeyCode.Space))
+        if (deathScreen) //If player is not dead, player can move and jump
         {
-            readyToJump = false;
-            Jump();
-            ResetJump();
+            //Move Player
+            moveInput = moveAction.ReadValue<Vector2>(); //Grabs the move acion value
+            horizonalInput = moveInput.x;
+            verticalInput = moveInput.y;
 
+            //Jump Player
+            if (readyToJump && isGrounded && Input.GetKeyDown(KeyCode.Space))
+            {
+                readyToJump = false;
+                Jump();
+                ResetJump();
+
+            }
         }
+       
     }
 
     private void Partical()
@@ -178,6 +207,46 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearDamping = 0;
             splashAudioClip.SetActive(false);
+        }
+    }
+
+    private void FallDamage()
+    {
+        FallTimer();
+
+        Vector3 linearVelocity = rb.linearVelocity;
+        float fallingspeed = linearVelocity.magnitude;
+        Debug.Log(fallingspeed);
+
+        if (isGrounded && fallingspeed > 20)
+        {
+            if(fallTimer > fallDamageLength * 0.1)
+            {
+                StartCoroutine(DeathScene());
+            }
+
+            fallTimer = 0;
+        }
+    }
+    private void FallTimer()
+    {
+        if (!isGrounded) 
+        {
+            fallTimer += Time.deltaTime;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("BadEnd"))
+        {
+            SceneManager.LoadScene(2);
+
+        }
+        if (collision.gameObject.CompareTag("GoodEnd"))
+        {
+            SceneManager.LoadScene(3);
+
         }
     }
 

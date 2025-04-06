@@ -15,20 +15,13 @@ public class SwitchingManager : MonoBehaviour
     private int playerMovementMechStage = 1;
 
     [Header("UI Objects")]
-    public GameObject gameMenu;
     public TextMeshProUGUI MovementStatusText;
     public TextMeshProUGUI HopsText;
     public TextMeshProUGUI CamStatusText;
 
-    void Start()
-    {
-        gameMenu.SetActive(false);
-    }
-
     // Update is called once per frame
     void Update()
     {
-        GameUIInputs();
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) playerMovementMechStage = 1;
         if (Input.GetKeyDown(KeyCode.Alpha2)) playerMovementMechStage = 2;
@@ -54,13 +47,6 @@ public class SwitchingManager : MonoBehaviour
                 JumpToRotate();
                 break;
         }
-    }
-
-    private void GameUIInputs()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab)) gameMenu.SetActive(!gameMenu.activeInHierarchy);
-        if (Input.GetKeyDown(KeyCode.Q)) SceneManager.LoadScene(0);
-     
     }
 
     private void MouseControlDrive()

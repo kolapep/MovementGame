@@ -41,10 +41,6 @@ public class ThirdPersonCam : MonoBehaviour
     {
         moveAction = InputSystem.actions.FindAction("Move");
 
-        //Locks Cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         Hops = false;
 
     }
