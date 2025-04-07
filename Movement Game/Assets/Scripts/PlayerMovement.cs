@@ -50,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
     public int fallDamageLength; //FALL DAMAGE ADJUSTER
     public float deathScreenDelay;
     public GameObject deathScreen;
+    public Transform respawnLocation;
 
     [Header("Character Animations")]
 
@@ -100,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(deathScreenDelay);
 
         musicIsMuted = false;
-        SceneManager.LoadScene(1);
+        transform.position = respawnLocation.position;
 
     }
 

@@ -11,6 +11,9 @@ public class SphereCollisionPoints : MonoBehaviour
         {
             Debug.Log("Collided with orb!");
 
+            PointsData.playerScore += 1;
+            Debug.Log(PointsData.playerScore);
+
             // Find ambient and ping sounds
             AudioSource[] audioSources = collision.gameObject.GetComponents<AudioSource>();
             AudioSource ambientAudio = null;

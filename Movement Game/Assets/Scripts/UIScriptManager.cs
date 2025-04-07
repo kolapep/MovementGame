@@ -16,6 +16,12 @@ public class UIScriptManager : MonoBehaviour
         {
             MenuUIFrame.SetActive(false);
         }
+
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            PointsData.playerScore = 0;
+
+        }
         else
         {
             MenuUIFrame.SetActive(true);
