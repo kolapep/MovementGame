@@ -29,20 +29,25 @@ public class UIScriptManager : MonoBehaviour
         
         if (SceneManager.GetActiveScene().buildIndex == 1)
         {
-            if (Input.GetKeyDown(KeyCode.Tab))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 MenuUIFrame.SetActive(!MenuUIFrame.activeInHierarchy);
 
-                if (Cursor.visible == false){
+                if (MenuUIFrame == true){
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
                 }
-                else
+                else if (MenuUIFrame == false)
                 {
                     Cursor.visible = false;
                     Cursor.lockState = CursorLockMode.Locked;
                 }
             }
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
        
     }
