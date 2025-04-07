@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BadEnd
   - GoodEnd
+  - orb
   layers:
   - Default
   - TransparentFX
