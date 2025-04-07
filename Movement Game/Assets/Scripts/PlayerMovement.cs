@@ -58,6 +58,10 @@ public class PlayerMovement : MonoBehaviour
     public ParticleSystem icePartic;
     public AudioSource backgroundMusic;
 
+    public GameObject musicButtonOn;
+    public GameObject musicButtonOff;
+    public bool musicIsMuted;
+
     public enum MovementStyle
     {
         BasicMove,
@@ -78,6 +82,9 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         readyToJump = true;
 
+        musicIsMuted = false;
+        musicButtonOff.SetActive(false);
+
         //Audio And Particles
         icePartic.Play();
         splashAudioClip.SetActive(false);
@@ -86,13 +93,13 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator DeathScene()
     {
-        backgroundMusic.mute = true;
+        musicIsMuted = true;
         deathScreen.SetActive(true);
         introText.SetActive(true);
 
         yield return new WaitForSeconds(deathScreenDelay);
 
-        backgroundMusic.mute = false;
+        musicIsMuted = false;
         SceneManager.LoadScene(1);
 
     }
@@ -108,7 +115,9 @@ public class PlayerMovement : MonoBehaviour
         Partical();
 
         FallDamage();
-       
+
+        SwitchMusic();
+
     }
 
     private void FixedUpdate()
@@ -135,6 +144,33 @@ public class PlayerMovement : MonoBehaviour
             }
         }
        
+    }
+
+    public void MusicButton()
+    {
+        if (musicIsMuted == true) //Turns Audio Off to On
+        {
+            musicIsMuted = false;
+            musicButtonOff.SetActive(false);
+            musicButtonOn.SetActive(true);
+        }
+        else //Turns Audio On to Off
+        {
+            musicIsMuted = true;
+            musicButtonOn.SetActive(false);
+            musicButtonOff.SetActive(true);
+        }
+    }
+
+    public void SwitchMusic()
+    {
+        if (musicIsMuted == true){
+            backgroundMusic.mute = true;
+        }
+
+        else if (musicIsMuted == false) {
+            backgroundMusic.mute = false;
+        }
     }
 
     private void Partical()
