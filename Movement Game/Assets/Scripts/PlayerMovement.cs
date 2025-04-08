@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     //Player Information
     public Transform orientation;
     Rigidbody rb;
+    public GameObject playerObjWater;
+    public GameObject playerObjIce;
 
     //Action Input references
     float horizonalInput;
@@ -28,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     InputAction jumpAction;
 
     public MovementStyle currentStyle;
+    public playerStyle currentPlayerStyle;
 
     [Header("Movement")]
     public float moveSpeed; //MOVE SPEED
@@ -63,10 +66,19 @@ public class PlayerMovement : MonoBehaviour
     public GameObject musicButtonOff;
     public bool musicIsMuted;
 
+    public bool PlayerCanJump;
+    public bool solidBody;
+
     public enum MovementStyle
     {
         BasicMove,
         ForwardMove,
+    }
+
+    public enum playerStyle
+    {
+        Ice,
+        Water
     }
 
     private void Start()
@@ -101,8 +113,15 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(deathScreenDelay);
 
         musicIsMuted = false;
-        transform.position = respawnLocation.position;
+        Respawn();
+        deathScreen.SetActive(false);
+        introText.SetActive(false);
 
+    }
+
+    public void Respawn()
+    {
+        transform.position = respawnLocation.position;
     }
 
     void Update()
@@ -118,6 +137,13 @@ public class PlayerMovement : MonoBehaviour
         FallDamage();
 
         SwitchMusic();
+
+        PlayerBody();
+
+        if (PlayerCanJump == false)
+        {
+            readyToJump = false;
+        }
 
     }
 
@@ -173,7 +199,20 @@ public class PlayerMovement : MonoBehaviour
             backgroundMusic.mute = false;
         }
     }
+    public void PlayerBody()
+    {
+        if (currentPlayerStyle == playerStyle.Ice)
+        {
+            playerObjIce.SetActive(true);
+            playerObjWater.SetActive(false);
 
+        }
+        if (currentPlayerStyle == playerStyle.Water)
+        {
+            playerObjWater.SetActive(true);
+            playerObjIce.SetActive(false);
+        }
+    }
     private void Partical()
     {
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
@@ -253,7 +292,6 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 linearVelocity = rb.linearVelocity;
         float fallingspeed = linearVelocity.magnitude;
-        Debug.Log(fallingspeed);
 
         if (isGrounded && fallingspeed > 20)
         {
@@ -302,6 +340,11 @@ public class PlayerMovement : MonoBehaviour
     public void SwitchMovementStyle(MovementStyle newStyle)
     {
         currentStyle = newStyle;
+    }
+
+    public void SwitchPlayerState(playerStyle newStyle)
+    {
+        currentPlayerStyle = newStyle;
     }
 
 }

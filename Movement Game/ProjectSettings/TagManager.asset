@@ -7,6 +7,9 @@ TagManager:
   - BadEnd
   - GoodEnd
   - orb
+  - IceStage
+  - WaterStage
+  - AirStage
   layers:
   - Default
   - TransparentFX

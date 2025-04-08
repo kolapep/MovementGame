@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,17 +17,22 @@ public class SwitchingManager : MonoBehaviour
 
     [Header("UI Objects")]
     public TextMeshProUGUI MovementStatusText;
-    public TextMeshProUGUI HopsText;
-    public TextMeshProUGUI CamStatusText;
 
+    public float airTimeDelay;
+    public GameObject Jumpmessage;
+
+    private void Start()
+    {
+        IceStage();
+        playerMovementMechStage = 1;
+        Jumpmessage.SetActive(false);
+
+    }
     // Update is called once per frame
     void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.Alpha1)) playerMovementMechStage = 1;
         if (Input.GetKeyDown(KeyCode.Alpha2)) playerMovementMechStage = 2;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) playerMovementMechStage = 3;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) playerMovementMechStage = 4;
 
     }
 
@@ -35,69 +41,93 @@ public class SwitchingManager : MonoBehaviour
         switch (playerMovementMechStage)
         {
             case 1:
-                MouseControlDrive();
+                IceStage();
                 break;
             case 2:
-                MouseControlFree();
-                break;
-            case 3:
-                ManualRotation();
-                break;
-            case 4:
-                JumpToRotate();
+                WaterStage();
                 break;
         }
+    }
+    IEnumerator AirStage()
+    {
+        Jumpmessage.SetActive(true);
+        playerMovementScript.isGrounded = true;
+        playerMovementScript.readyToJump = true;
+
+        yield return new WaitForSeconds(airTimeDelay);
+
+        Jumpmessage.SetActive(false);
+        playerMovementMechStage = 2;
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("IceStage"))
+        {
+            playerMovementMechStage = 1;
+        }
+        if (other.gameObject.CompareTag("WaterStage"))
+        {
+            playerMovementMechStage = 2;
+        }
+        if (other.gameObject.CompareTag("AirStage"))
+        {
+            AirStage();
+        }
+    }
+    public void IceStage()
+    {
+        playerMovementScript.PlayerCanJump = true;
+        MovementStatusText.text = "Rotate player with A and D, Press Space to Jump";
+        playerMovementScript.SwitchPlayerState(playerStyle.Ice);
+        ManualRotation();
+    }
+    public void WaterStage()
+    {
+        playerMovementScript.PlayerCanJump = false;
+        MovementStatusText.text = "Rotate player with Mouse";
+        playerMovementScript.SwitchPlayerState(playerStyle.Water);
+        MouseControlDrive();
     }
 
     private void MouseControlDrive()
     {
         RotationScript.SwitchCameraStyle(CameraStyle.LockedCam);
-        CamStatusText.text = "Player Direction: Camera";
 
         playerMovementScript.SwitchMovementStyle(MovementStyle.ForwardMove);
-        MovementStatusText.text = "Move Forward: W";
 
         RotationScript.Hops = false;
-        HopsText.text = "Hops: False";
 
     }
 
     private void MouseControlFree()
     {
         RotationScript.SwitchCameraStyle(CameraStyle.LockedCam);
-        CamStatusText.text = "Player Direction: Camera";
 
         playerMovementScript.SwitchMovementStyle(MovementStyle.BasicMove);
-        MovementStatusText.text = "Move Forward: W A D";
 
         RotationScript.Hops = false;
-        HopsText.text = "Hops: False";
 
     }
 
     private void ManualRotation()
     {
         RotationScript.SwitchCameraStyle(CameraStyle.BasicCam);
-        CamStatusText.text = "Player Direction: Manual";
 
         playerMovementScript.SwitchMovementStyle(MovementStyle.ForwardMove);
-        MovementStatusText.text = "Move Forward: W";
 
         RotationScript.Hops = false;
-        HopsText.text = "Hops: False";
 
     }
 
     private void JumpToRotate()
     {
         RotationScript.SwitchCameraStyle(CameraStyle.BasicCam);
-        CamStatusText.text = "Player Direction: Manual";
 
         playerMovementScript.SwitchMovementStyle(MovementStyle.ForwardMove);
-        MovementStatusText.text = "Move Forward: W";
 
         RotationScript.Hops = true;
-        HopsText.text = "Hops: True";
 
     }
 
